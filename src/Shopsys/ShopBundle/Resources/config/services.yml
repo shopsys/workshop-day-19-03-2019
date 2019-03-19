@@ -101,3 +101,5 @@ services:
     Shopsys\FrameworkBundle\Model\Pricing\Vat\VatFacade: '@Shopsys\ShopBundle\Model\Pricing\Vat\VatFacade'
 
     Shopsys\FrameworkBundle\Model\Pricing\Vat\VatRepository: '@Shopsys\ShopBundle\Model\Pricing\Vat\VatRepository'
+
+    Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacade: '@Shopsys\ShopBundle\Model\Product\ProductOnCurrentDomainFacade'

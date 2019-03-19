@@ -16,6 +16,7 @@ use Shopsys\FrameworkBundle\Model\Product\Listing\ProductListOrderingModeForSear
 use Shopsys\FrameworkBundle\Model\Product\ProductOnCurrentDomainFacade;
 use Shopsys\FrameworkBundle\Twig\RequestExtension;
 use Shopsys\ShopBundle\Form\Front\Product\ProductFilterFormType;
+use Shopsys\ShopBundle\Model\Product\LastVisitedProduct\LastVisitedProductFacade;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends FrontBaseController
@@ -75,6 +76,11 @@ class ProductController extends FrontBaseController
     private $brandFacade;
 
     /**
+     * @var \Shopsys\ShopBundle\Model\Product\LastVisitedProduct\LastVisitedProductFacade
+     */
+    private $lastVisitedProductFacade;
+
+    /**
      * @param \Shopsys\FrameworkBundle\Twig\RequestExtension $requestExtension
      * @param \Shopsys\FrameworkBundle\Model\Category\CategoryFacade $categoryFacade
      * @param \Shopsys\FrameworkBundle\Component\Domain\Domain $domain
@@ -96,7 +102,8 @@ class ProductController extends FrontBaseController
         ProductListOrderingModeForBrandFacade $productListOrderingModeForBrandFacade,
         ProductListOrderingModeForSearchFacade $productListOrderingModeForSearchFacade,
         ModuleFacade $moduleFacade,
-        BrandFacade $brandFacade
+        BrandFacade $brandFacade,
+        LastVisitedProductFacade $lastVisitedProductFacade
     ) {
         $this->requestExtension = $requestExtension;
         $this->categoryFacade = $categoryFacade;
@@ -108,6 +115,7 @@ class ProductController extends FrontBaseController
         $this->productListOrderingModeForSearchFacade = $productListOrderingModeForSearchFacade;
         $this->moduleFacade = $moduleFacade;
         $this->brandFacade = $brandFacade;
+        $this->lastVisitedProductFacade = $lastVisitedProductFacade;
     }
 
     /**
@@ -125,12 +133,16 @@ class ProductController extends FrontBaseController
         $variants = $this->productOnCurrentDomainFacade->getVariantsForProduct($product);
         $productMainCategory = $this->categoryFacade->getProductMainCategoryByDomainId($product, $this->domain->getId());
 
-        return $this->render('@ShopsysShop/Front/Content/Product/detail.html.twig', [
+        $detailActionResponse = $this->render('@ShopsysShop/Front/Content/Product/detail.html.twig', [
             'product' => $product,
             'accessories' => $accessories,
             'variants' => $variants,
             'productMainCategory' => $productMainCategory,
         ]);
+
+        $this->lastVisitedProductFacade->updateLastVisitedProductsIds($id, $detailActionResponse);
+
+        return $detailActionResponse;
     }
 
     /**
