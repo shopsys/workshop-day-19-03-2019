@@ -20,6 +20,8 @@
 
 {% block main_content %}
 
+    {{ staticBlock.text|raw }}
+
     {% if sliderItems is not empty %}
         <div class="box-slider">
             <div id="js-slider-homepage" class="box-slider__in">

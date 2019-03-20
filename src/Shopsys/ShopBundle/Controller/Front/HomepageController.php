@@ -7,6 +7,7 @@ use Shopsys\FrameworkBundle\Model\Customer\CurrentCustomer;
 use Shopsys\FrameworkBundle\Model\Product\TopProduct\TopProductFacade;
 use Shopsys\FrameworkBundle\Model\Seo\SeoSettingFacade;
 use Shopsys\FrameworkBundle\Model\Slider\SliderItemFacade;
+use Shopsys\ShopBundle\Model\StaticBlock\StaticBlockFacade;
 
 class HomepageController extends FrontBaseController
 {
@@ -36,6 +37,11 @@ class HomepageController extends FrontBaseController
     private $domain;
 
     /**
+     * @var \Shopsys\ShopBundle\Model\StaticBlock\StaticBlockFacade
+     */
+    private $staticBlockFacade;
+
+    /**
      * @param \Shopsys\FrameworkBundle\Model\Customer\CurrentCustomer $currentCustomer
      * @param \Shopsys\FrameworkBundle\Model\Slider\SliderItemFacade $sliderItemFacade
      * @param \Shopsys\FrameworkBundle\Model\Product\TopProduct\TopProductFacade $topProductsFacade
@@ -47,13 +53,15 @@ class HomepageController extends FrontBaseController
         SliderItemFacade $sliderItemFacade,
         TopProductFacade $topProductsFacade,
         SeoSettingFacade $seoSettingFacade,
-        Domain $domain
+        Domain $domain,
+        StaticBlockFacade $staticBlockFacade
     ) {
         $this->currentCustomer = $currentCustomer;
         $this->sliderItemFacade = $sliderItemFacade;
         $this->topProductFacade = $topProductsFacade;
         $this->seoSettingFacade = $seoSettingFacade;
         $this->domain = $domain;
+        $this->staticBlockFacade = $staticBlockFacade;
     }
 
     public function indexAction()
@@ -69,6 +77,7 @@ class HomepageController extends FrontBaseController
             'topProducts' => $topProducts,
             'title' => $this->seoSettingFacade->getTitleMainPage($this->domain->getId()),
             'metaDescription' => $this->seoSettingFacade->getDescriptionMainPage($this->domain->getId()),
+            'staticBlock' => $this->staticBlockFacade->getById(1),
         ]);
     }
 }
